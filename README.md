@@ -1,4 +1,4 @@
-# Inter_Tasks
+# Intern_Tasks
 
 ## SQL Cheatset 
 
