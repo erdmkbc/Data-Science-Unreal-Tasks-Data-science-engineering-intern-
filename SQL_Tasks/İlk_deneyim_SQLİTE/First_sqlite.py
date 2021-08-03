@@ -30,9 +30,6 @@ MAX, COUNT, AVG gibi operatörlerle numerik analiz yapılabilmekte
 
 """
 
-
-
-
 #%% importing sqlite module 
 import sqlite3
 
@@ -65,37 +62,37 @@ c.execute('''CREATE TABLE IF NOT EXISTS Boats
 
 #%% insert students class 
 
-c.execute("""INSERT INTO Sailors VALUES(22, 'Dustin ', 7, 45.0)""")
-c.execute("""INSERT INTO Sailors VALUES(29, 'Brutus', 1, 33.0)""")
-c.execute("""INSERT INTO Sailors VALUES(31, 'Lubber', 8, 55.5)""")
-c.execute("""INSERT INTO Sailors VALUES(32, 'Andy', 8, 25.5)""")
-c.execute("""INSERT INTO Sailors VALUES(58, 'Rusty', 10, 35.0)""")
-c.execute("""INSERT INTO Sailors VALUES(64, 'Horatio', 7, 35.0)""")
-c.execute("""INSERT INTO Sailors VALUES(71, 'Zorba', 10, 16.0)""")
-c.execute("""INSERT INTO Sailors VALUES(74, 'Horatio', 9, 35.0)""")
-c.execute("""INSERT INTO Sailors VALUES(85, 'Art', 3, 35.0)""")
-c.execute("""INSERT INTO Sailors VALUES(95, 'Bob', 3, 63.5)""")
+#c.execute("""INSERT INTO Sailors VALUES(22, 'Dustin ', 7, 45.0)""")
+#c.execute("""INSERT INTO Sailors VALUES(29, 'Brutus', 1, 33.0)""")
+#c.execute("""INSERT INTO Sailors VALUES(31, 'Lubber', 8, 55.5)""")
+#c.execute("""INSERT INTO Sailors VALUES(32, 'Andy', 8, 25.5)""")
+#c.execute("""INSERT INTO Sailors VALUES(58, 'Rusty', 10, 35.0)""")
+#c.execute("""INSERT INTO Sailors VALUES(64, 'Horatio', 7, 35.0)""")
+#c.execute("""INSERT INTO Sailors VALUES(71, 'Zorba', 10, 16.0)""")
+#c.execute("""INSERT INTO Sailors VALUES(74, 'Horatio', 9, 35.0)""")
+#c.execute("""INSERT INTO Sailors VALUES(85, 'Art', 3, 35.0)""")
+#c.execute("""INSERT INTO Sailors VALUES(95, 'Bob', 3, 63.5)""")
 conn.commit()
 
 #%% Insterting Reserves 
 
-c.execute("""INSERT INTO Reserves VALUES(22, 101, '10/10/98')""")
-c.execute("""INSERT INTO Reserves VALUES(22, 102, '10/10/98')""")
-c.execute("""INSERT INTO Reserves VALUES(22, 103, '10/8/98')""")
-c.execute("""INSERT INTO Reserves VALUES(22, 104,'10/7/98')""")
-c.execute("""INSERT INTO Reserves VALUES(31, 102, '11/10/98')""")
-c.execute("""INSERT INTO Reserves VALUES(31, 103, '11/6/98')""")
-c.execute("""INSERT INTO Reserves VALUES(31, 104, '11/12/98')""")
-c.execute("""INSERT INTO Reserves VALUES(64, 101, '9/5/98')""")
-c.execute("""INSERT INTO Reserves VALUES(64, 102, '9/8/98')""")
-c.execute("""INSERT INTO Reserves VALUES(74, 103, '9/8/98')""")
+#c.execute("""INSERT INTO Reserves VALUES(22, 101, '10/10/98')""")
+#c.execute("""INSERT INTO Reserves VALUES(22, 102, '10/10/98')""")
+#c.execute("""INSERT INTO Reserves VALUES(22, 103, '10/8/98')""")
+#c.execute("""INSERT INTO Reserves VALUES(22, 104,'10/7/98')""")
+#c.execute("""INSERT INTO Reserves VALUES(31, 102, '11/10/98')""")
+#c.execute("""INSERT INTO Reserves VALUES(31, 103, '11/6/98')""")
+#c.execute("""INSERT INTO Reserves VALUES(31, 104, '11/12/98')""")
+#c.execute("""INSERT INTO Reserves VALUES(64, 101, '9/5/98')""")
+#c.execute("""INSERT INTO Reserves VALUES(64, 102, '9/8/98')""")
+#c.execute("""INSERT INTO Reserves VALUES(74, 103, '9/8/98')""")
 conn.commit()
 
 #%% Insterting Boats 
-c.execute("""INSERT INTO Boats VALUES(101, 'Interlake', 'blue')""")
-c.execute("""INSERT INTO Boats VALUES(102, 'Interlake', 'red')""")
-c.execute("""INSERT INTO Boats VALUES(103, 'Clipper', 'green')""")
-c.execute("""INSERT INTO Boats VALUES(104, 'Marine','red')""")
+#c.execute("""INSERT INTO Boats VALUES(101, 'Interlake', 'blue')""")
+#c.execute("""INSERT INTO Boats VALUES(102, 'Interlake', 'red')""")
+#c.execute("""INSERT INTO Boats VALUES(103, 'Clipper', 'green')""")
+#c.execute("""INSERT INTO Boats VALUES(104, 'Marine','red')""")
 conn.commit()
 
 #%% BASİC QUERİES
@@ -277,13 +274,40 @@ cursor = conn.execute("""SELECT S.snmame
 for row in cursor:
     print(row)
     
-#%%  The GROUP BY and HAVING Clauses 
+#%% UNION, INTERSECT, AND EXCEPT
 
-#%% 1-) 
+#%% 1- ) Find the names of sailors who have reserved a red 01' a green boat.
 
+cursor = conn.execute("""SELECT S.snmame
+                      FROM Sailors S, Reserves R, Boats B 
+                      WHERE S.sid = R.sid AND R.bid = B.bid
+                      AND(B.color = 'red' OR B.color = 'green')""")
+for row in cursor:
+    print(row)
 
+#%% 2- ) Find the sids of all sailor's who have reserved red boats but not green boats.
 
+cursor = conn.execute("""SELECT S.sid 
+                      FROM Sailors S, Reserves R, Boats B
+                      WHERE S.sid = R.sid AND R.bid = B.bid AND B.color = 'red'
+                      EXCEPT
+                      SELECT S2.sid
+                      FROM Sailors S2, Reserves R2, Boats B2
+                      WHERE S2.sid = R2.sid AND R2.bid = B2.bid AND B2.color = 'green'""")
+for row in cursor:
+    print(row)
 
+#%% 3-)Bonus yeşil bot rezervasyonu yaptıran, 22 sidsine sahip olan yaşı 22 yaş üzerinde 
+#kırmızı bot kiralamamış yaşı 40 üzeri olmayan verdiği rating 6 üzeri olan insanların adı 
 
-
-
+cursor = conn.execute("""SELECT S.snmame 
+                      FROM Sailors S, Reserves R, Boats B 
+                      WHERE S.sid = R.sid AND R.bid = B.bid AND(B.color = 'green' AND 
+                                                                S.sid = 22 AND S.age > 20 AND
+                                                                S.rating > 5)
+                      EXCEPT
+                      SELECT S2.sid 
+                      FROM Sailors S2, Reserves R2, Boats B2
+                      WHERE S2.sid = R2.sid AND R2.bid = B2.bid AND(B2.color = 'red' AND S2.age > 40)""")
+for row in cursor:
+    print(row)
