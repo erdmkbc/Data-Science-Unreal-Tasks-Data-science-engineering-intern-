@@ -2,10 +2,10 @@
 
 ## SQL Cheatset 
 
-* DISTINCT
+* DISTINCT:
      Python da .unique() karşılık gelir bir columnda eşsiz elemanları dizgiler.
 
-* Primary key 
+* Primary key: 
      Eşsiz anahtar oluşturur.
 
 * Foreign key: 
@@ -16,6 +16,7 @@
 
 * INTERSECT : 
      İki farklı sorgu kümesinin ortak olan değerlerini dönderir union farklı olarak unique elemanları dönderir.
+
 * UNION : 
     Çekilen columnlarda yalnızca kesişim değerlerini tek bir kümede dönderir.
 
