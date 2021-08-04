@@ -35,4 +35,7 @@ ile 1 veya 0 döndermeli.
 * MAX, COUNT, AVG gibi operatörlerle numerik analiz yapılabilmekte
 
  
+Referans kitap: 
+Ramakrishnan - Database Management Systems 3rd Edition
+
 
