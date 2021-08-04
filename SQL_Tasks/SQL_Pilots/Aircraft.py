@@ -26,14 +26,14 @@ cursor = c.execute('''CREATE TABLE IF NOT EXISTS flights
               price    REAL)''')
 
 cursor = c.execute('''CREATE TABLE IF NOT EXISTS aircraft
-             (aid  INTEGER INTEGER PRIMARY KEY,
+             (aid  INTEGER PRIMARY KEY,
               aname   TEXT,
-              cruisingrange   TEXT)''')
+              cruisingrange INTEGER)''')
 
 cursor = c.execute('''CREATE TABLE IF NOT EXISTS employees
              (eid   INTEGER PRIMARY KEY,
-              ename    TEXT,
-              salary    TEXT)''')
+              ename  TEXT,
+              salary  INTEGER)''')
 
 cursor = c.execute('''CREATE TABLE IF NOT EXISTS certified
              (eid   INTEGER,  
@@ -179,8 +179,12 @@ conn.commit()
 #$80,000.
 
 cursor = conn.execute('''SELECT A.aname
-                      FROM aircraft A, employees E
-                      WHERE E.salary > 80.000''')
+                      FROM aircraft A, certified C, employees E
+                      WHERE A.aid = C.aid AND E.eid = C.eid 
+                      AND NOT EXISTS
+                      (SELECT *
+                       FROM employees E1
+                       WHERE E1.eid = e.eid  AND E1.salary < 80000)''')
 
 for row in cursor:
     print(row)
@@ -277,15 +281,78 @@ for row in cursor:
 #%% 7-) Print the names of employees who are certified only on aircrafts with cruising range
 #longer than 1000 miles.
 
-cursor = conn.execute("""SELECT E.ename 
-                      FROM employees E, aircraft A, certified C
-                      WHERE A.aid = C.aid AND E.eid = C.eid AND A.cruisingrange > 1000""")
+"""
+İstenilen displayin tanımlanması
+idler ile tablelar arası bağlatının kurulması 
+group by ile eid ve enamelerin gerekli filtrelere tabi tutulup alınması
+"""
+
+cursor = conn.execute("""SELECT  E.ename
+                      FROM employees E, certified C, aircraft A
+                      WHERE A.aid=C.aid AND C.eid=E.eid
+                      GROUP BY  E.eid, E.ename
+                      HAVING A.cruisingrange > 1000""")
 
 for row in cursor:
     print(row)
-#%% 
+    
+#%% 8 - ) Print the enames of pilots who can operate planes with cruisingrange greater than 3000 miles 
+#but are not certified on any Boeing aircraft.
 
+"""
+İstenilen displayin oluşturulması 
+Employees tableından filtreleme yapılması 
+Cerfication tableı ile filtreleme işleminin gerçekleştirilmesi 
+Airfact ile filtreleme işlemenin gerçekleştirilmesi 
+(Temel mantık cümlenin başından sonuna kadar her biri için nested query gerçekleştir)
+"""
 
+cursor = conn.execute("""SELECT E.ename
+                      FROM employees E
+                      WHERE E.eid IN(SELECT C.eid
+                                     FROM Certified C
+                                     WHERE EXISTS (SELECT A.aid
+                                                   FROM Aircraft A
+                                                   WHERE A.aid = C.aid AND A.cruisingrange > 3000
+                                                   AND NOT EXISTS(SELECT A1.aid
+                                                                  FROM Aircraft A1
+                                                                  WHERE A1.aid = C.aid
+                                                                  AND A1.aname = 'Boeing')))""")
+for row in cursor:
+    print(row)
 
+#%% 9-) Print the names of employees who are certified only on aircrafts with cruising range
+#longer than 1000 miles, but on at least two such aircrafts
 
+"""
+İd ler ile table lar arası bağlantı sağla 
+GROUP BY ile eid ve enameleri oluştur display al 
+filtreleme işlemini gerçekleştir
+"""
+cursor = conn.execute("""SELECT  E.ename
+                      FROM employees E, certified C, aircraft A
+                      WHERE  C.aid = A.aid AND E.eid = C.eid
+                      GROUP BY  E.eid, E.ename 
+                      HAVING (A.cruisingrange > 1000) AND COUNT (*) > 1""")
+
+for row in cursor:
+    print(row)
+    
+#%% 10-) Print the names of employees who are certified only on aircrafts with cruising range
+#longer than 1000 miles and who are certified on some Boeing aircraft.
+
+"""
+İd ler ile table lar arası bağlantı sağla 
+GROUP BY ile eid ve enameleri oluştur display al 
+filtreleme işlemini gerçekleştir
+"""
+
+cursor = conn.execute("""SELECT  E.ename
+                      FROM  Employees E, Certified C, Aircraft A
+                      WHERE  C.aid = A.aid AND E.eid = C.eid 
+                      GROUP BY  E.eid, E.ename
+                      HAVING A.cruisingrange > 1000 AND A.aname = 'Boeing'""")
+
+for row in cursor:
+    print(row)
 
