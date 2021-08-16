@@ -2,6 +2,14 @@
 
 ## SQL Cheatset 
 
+### Genel metedoloji:
+
+* Gruplanacak değişkenlerin belirlenmesi(zaman tabanlı gruplamalarda ay için EXTRACT(MONTH FROM DATETIME(TIMESTAMP_MICROS(event_timestamp), "Europe/"Istanbul")) kullanılmalı.)
+* Gruplancıcak unique olmayan gruplandırma sorgularının OVER(PARTITION BY) ile gruplandırılması.
+* 'CASE WHEN' yapısı ile labellanacak olan dataların labellanması. 
+* Unique şekilde gruplandırma yapılacaksa group by kullanılmalı.
+* _TABLE_SUFFIX ile datanın zaman, özellik vb bakımlardan istenilen şekilde filtrelenmesi.
+
 * DISTINCT:
      Python da .unique() karşılık gelir bir columnda eşsiz elemanları dizgiler.
 
@@ -34,7 +42,9 @@ ile 1 veya 0 döndermeli.
 
 * MAX, COUNT, AVG gibi operatörlerle numerik analiz yapılabilmekte
 
-* PARSE_DATE: Parseing işlemi yapılıyor ve verilen tarih normal type da return ediliyor.
+* PARSE_DATE: Parseing işlemi yapılıyor ve verilen tarih normal type da return ediliyor(örneğin 2021-08-01).
+
+* OVER(PARTITION BY) : Group by'dan farklı olarak unique değerler döndermez.
 
  
 Referans kitap: 
