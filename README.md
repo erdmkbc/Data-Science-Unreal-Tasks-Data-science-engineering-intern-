@@ -10,6 +10,8 @@
 * Unique şekilde gruplandırma yapılacaksa group by kullanılmalı.
 * _TABLE_SUFFIX ile datanın zaman, özellik vb bakımlardan istenilen şekilde filtrelenmesi.
 
+### Cheatset
+
 * DISTINCT:
      Python da .unique() karşılık gelir bir columnda eşsiz elemanları dizgiler.
 
