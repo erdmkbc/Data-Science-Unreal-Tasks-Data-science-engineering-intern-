@@ -34,6 +34,8 @@ ile 1 veya 0 döndermeli.
 
 * MAX, COUNT, AVG gibi operatörlerle numerik analiz yapılabilmekte
 
+* PARSE_DATE: Parseing işlemi yapılıyor ve verilen tarih normal type da return ediliyor.
+
  
 Referans kitap: 
 Ramakrishnan - Database Management Systems 3rd Edition
