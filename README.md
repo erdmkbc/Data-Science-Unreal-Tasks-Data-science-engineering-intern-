@@ -4,10 +4,10 @@
 
 ### Genel metedoloji:
 
-* Gruplanacak değişkenlerin belirlenmesi(zaman tabanlı gruplamalarda ay için EXTRACT(MONTH FROM DATETIME(TIMESTAMP_MICROS(event_timestamp), "Europe/"Istanbul")) kullanılmalı.)
+* Gruplanacak değişkenlerin belirlenmesi(zaman tabanlı gruplamalarda ay,gün,yıl için EXTRACT('{}' FROM DATETIME(TIMESTAMP_MICROS(event_timestamp), "Europe/"Istanbul")) kullanılmalı.)
 * Gruplancıcak unique olmayan gruplandırma sorgularının OVER(PARTITION BY) ile gruplandırılması.
 * 'CASE WHEN' yapısı ile labellanacak olan dataların labellanması. 
-* Unique şekilde gruplandırma yapılacaksa group by kullanılmalı.
+* Unique şekilde gruplandırma yapılacaksa group by kullanılması.
 * _TABLE_SUFFIX ile datanın zaman, özellik vb bakımlardan istenilen şekilde filtrelenmesi.
 
 ### Cheatset
